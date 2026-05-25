@@ -1,0 +1,27 @@
+.user-video-feed{
+    
+    width:20rem;
+    aspect-ratio: 16/9;
+    border-radius: 1rem;
+    object-fit: cover;
+
+}
+
+.facial-expression-detector{
+    width:100%;
+ padding: 4rem; 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    justify-content:flex-start;
+}
+.facial-expression-detector button{
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
