@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import * as faceapi from "face-api.js";
 import "./facialExpression.css";
-import axios from "axios";
 
-export default function FacialExpression({ setSongs }) {
+export default function FacialExpression() {
 
   const videoRef = useRef();
 
@@ -78,25 +77,9 @@ export default function FacialExpression({ setSongs }) {
         detectedExpression = expression;
       }
     }
-    /*  Here you can make an API call to your backend to fetch songs based on the detected expression. For example:
-     axios.get(`/api/songs?mood=${detectedExpression}`)
-          .then(response => setSongs(response.data))
-          .catch(error => console.error("Error fetching songs:", error));
-     */
-    
 
-    const response = await axios.get(
-      `http://localhost:3000/songs?mood=${detectedExpression}`
-    );
-
-    console.log("Songs fetched successfully:", response.data);
-    setSongs(response.data.songs);
-  
-
-  
-   
-  }
-
+    console.log("Detected Mood:", detectedExpression);
+  };
 
   return (
 
@@ -105,7 +88,7 @@ export default function FacialExpression({ setSongs }) {
       <video
         ref={videoRef}
         autoPlay
-       muted
+        muted
         className="user-video-feed"
       />
 
