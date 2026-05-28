@@ -1,118 +1,194 @@
-import React, { useEffect, useRef } from "react";
-import * as faceapi from "face-api.js";
-import "./facialExpression.css";
-import axios from "axios";
 
-export default function FacialExpression({ setSongs }) {
+import React, { useEffect, useRef, useState } from 'react';
+import * as faceapi from 'face-api.js';
+import axios from 'axios';
+
+const FaceExpressionDetector = ({ setSongs }) => {
 
   const videoRef = useRef();
 
-  // Load models and start camera
+  const [currentMood, setCurrentMood] = useState("Ready");
+  const [loading, setLoading] = useState(false);
+
+ 
+
+  const startVideo = () => {
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+
+      .then((stream) => {
+
+        videoRef.current.srcObject = stream;
+
+      })
+
+      .catch((err) => {
+
+        console.log(err);
+      });
+  };
+
+  // FETCH SONGS
+
+  const fetchSongs = async (mood) => {
+
+    try {
+
+      const response = await axios.get(
+        `http://localhost:3000/songs?mood=${mood}`
+      );
+
+      setSongs(response.data.songs);
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  };
+
+  // DETECT MOOD
+
+  const detectMood = async () => {
+
+    try {
+
+      setLoading(true);
+
+      const detections = await faceapi
+        .detectSingleFace(
+          videoRef.current,
+          new faceapi.TinyFaceDetectorOptions()
+        )
+        .withFaceExpressions();
+
+      if (detections) {
+
+        const expressions = detections.expressions;
+
+        const mood = Object.keys(expressions).reduce((a, b) =>
+          expressions[a] > expressions[b] ? a : b
+        );
+
+        setCurrentMood(mood);
+
+        console.log("Detected Mood:", mood);
+
+        await fetchSongs(mood);
+
+      } else {
+
+        setCurrentMood("No Face");
+      }
+
+      setLoading(false);
+
+    } catch (error) {
+
+      console.log(error);
+
+      setLoading(false);
+    }
+  };
+
+ 
+
+  const getMoodEmoji = (mood) => {
+
+    switch (mood) {
+
+      case "happy":
+        return "😄";
+
+      case "sad":
+        return "😢";
+
+      case "angry":
+        return "😡";
+
+      case "surprised":
+        return "😲";
+
+      case "fearful":
+        return "😨";
+
+      case "disgusted":
+        return "🤢";
+
+      case "neutral":
+        return "😐";
+
+      case "No Face":
+        return "🚫";
+
+      default:
+        return "🎵";
+    }
+  };
+
+  
+
   useEffect(() => {
 
     const loadModels = async () => {
 
-      const MODEL_URL = "/models";
+      await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
 
-      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-
-      await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceExpressionNet.loadFromUri('/models');
 
       console.log("Models Loaded");
-    };
 
-    const startVideo = async () => {
-
-      try {
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-
-        videoRef.current.srcObject = stream;
-
-      } catch (err) {
-
-        console.error("Error accessing webcam:", err);
-      }
+      startVideo();
     };
 
     loadModels();
-    startVideo();
 
   }, []);
 
-
-  const detectMood = async () => {
-
-    const detections = await faceapi
-      .detectAllFaces(
-        videoRef.current,
-        new faceapi.TinyFaceDetectorOptions()
-      )
-      .withFaceExpressions();
-
-    // No face detected
-    if (!detections || detections.length === 0) {
-
-      console.log("No faces detected");
-      return;
-    }
-
-    let mostProbableExpression = 0;
-    let detectedExpression = "";
-
-    // Find highest expression value
-    for (const expression of Object.keys(
-      detections[0].expressions
-    )) {
-
-      if (
-        detections[0].expressions[expression] >
-        mostProbableExpression
-      ) {
-
-        mostProbableExpression =
-          detections[0].expressions[expression];
-
-        detectedExpression = expression;
-      }
-    }
-    /*  Here you can make an API call to your backend to fetch songs based on the detected expression. For example:
-     axios.get(`/api/songs?mood=${detectedExpression}`)
-          .then(response => setSongs(response.data))
-          .catch(error => console.error("Error fetching songs:", error));
-     */
-    
-
-    const response = await axios.get(
-      `http://localhost:3000/songs?mood=${detectedExpression}`
-    );
-
-    console.log("Songs fetched successfully:", response.data);
-    setSongs(response.data.songs);
-  
-
-  
-   
-  }
-
-
   return (
 
-    <div className="facial-expression-detector">
+    <div className="face-detection-container">
+
+      
+
+      <div className="live-status">
+
+        <div className="live-dot"></div>
+
+        LIVE AI
+
+      </div>
+
+      
 
       <video
         ref={videoRef}
         autoPlay
-       muted
-        className="user-video-feed"
+        muted
+        className="video"
       />
 
-      <button onClick={detectMood}>
-        Mood Detection
+
+      <h2 className="mood-text">
+
+        {loading
+          ? "🎵 Detecting..."
+          : `${getMoodEmoji(currentMood)} ${currentMood}`
+        }
+
+      </h2>
+
+  
+
+      <button
+        className="detect-btn"
+        onClick={detectMood}
+      >
+        Detect Mood
       </button>
 
     </div>
   );
-}
+};
+
+export default FaceExpressionDetector;
