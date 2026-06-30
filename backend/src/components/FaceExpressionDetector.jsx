@@ -6,7 +6,7 @@ export default function FacialExpression() {
 
   const videoRef = useRef();
 
-  // Load models and start camera
+
   useEffect(() => {
 
     const loadModels = async () => {
@@ -51,7 +51,7 @@ export default function FacialExpression() {
       )
       .withFaceExpressions();
 
-    // No face detected
+    
     if (!detections || detections.length === 0) {
 
       console.log("No faces detected");
@@ -61,7 +61,7 @@ export default function FacialExpression() {
     let mostProbableExpression = 0;
     let detectedExpression = "";
 
-    // Find highest expression value
+    
     for (const expression of Object.keys(
       detections[0].expressions
     )) {

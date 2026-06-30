@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "6a143286e792abd8c73a5b08",
+    "title": "text_title_sad",
+    "artist": "text_artist_sad",
+    "audio": "https://ik.imagekit.io/Rajvt172/audio-files/6a143281e792abd8c73a5b07_X_l9A5shB",
+    "mood": "sad",
+    "__v": 0
+  },
+  {
+    "_id": "6a147b4d28bec2d57f3c41ac",
+    "title": "text_title_neutral",
+    "artist": "text_artist_neutral",
+    "audio": "https://ik.imagekit.io/Rajvt172/audio-files/6a147b4828bec2d57f3c41ab_eIgW8WqPf",
+    "mood": "neutral",
+    "__v": 0
+  },
+  {
+    "_id": "6a15fc355322de3c5eca390e",
+    "title": "tujhko",
+    "artist": "arjit_singh",
+    "audio": "https://ik.imagekit.io/Rajvt172/audio-files/6a15fc335322de3c5eca390d_NFGqLaiAt",
+    "mood": "happy",
+    "__v": 0
+  },
+  {
+    "_id": "6a15fd065322de3c5eca3911",
+    "title": "tu bewafa hai",
+    "artist": "arjit_singh",
+    "audio": "https://ik.imagekit.io/Rajvt172/audio-files/6a15fd045322de3c5eca3910_s1MR_YKLu",
+    "mood": "sad",
+    "__v": 0
+  },
+  {
+    "_id": "6a15fe695322de3c5eca3914",
+    "title": "mera pahla pahla pyar",
+    "artist": "k k",
+    "audio": "https://ik.imagekit.io/Rajvt172/audio-files/6a15fe665322de3c5eca3913_9IItUgqVT",
+    "mood": "happy",
+    "__v": 0
+  },
+  {
+    "_id": "6a1689407dedd4e65ad2d1a9",
+    "title": "Tu jane na",
+    "artist": "atif aslam",
+    "audio": "https://ik.imagekit.io/Rajvt172/audio-files/6a1689387dedd4e65ad2d1a8_51NlqWP-W",
+    "mood": "sad",
+    "__v": 0
+  }
+]

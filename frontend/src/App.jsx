@@ -18,7 +18,7 @@ function App() {
 
     <div className="main-layout">
 
-      {/* SIDEBAR */}
+      
 
       <div className="sidebar">
 
@@ -54,23 +54,23 @@ function App() {
 
       </div>
 
-      {/* CONTENT */}
+      
 
       <div className="content">
 
-        {/* MOOD BACKGROUND */}
+        
 
         <div className={`mood-background ${currentMood}`}></div>
 
-        {/* FLOATING ORB */}
+      
 
         <div className="floating-orb"></div>
 
-        {/* TOP SECTION */}
+        
 
         <div className="top-section">
 
-          {/* LEFT */}
+          
 
           <div className="left-section">
 
@@ -88,7 +88,7 @@ function App() {
 
           </div>
 
-          {/* CAMERA */}
+          
 
           <div className="camera-wrapper">
 
@@ -104,7 +104,7 @@ function App() {
 
         </div>
 
-        {/* SONGS */}
+        
 
         <MoodSongs songs={songs} />
 
@@ -115,3 +115,4 @@ function App() {
 }
 
 export default App;
+
