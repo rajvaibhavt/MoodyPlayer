@@ -96,7 +96,7 @@ const FaceExpressionDetector = ({ setSongs, setCurrentMood }) => {
         neutral: "neutral",
         surprised: "surprised",
         fearful: "fearful",
-        disgusted: "disgusted",
+        disgusted: "disgusted ",
       };
 
       const finalMood = moodMap[mood] || "happy";

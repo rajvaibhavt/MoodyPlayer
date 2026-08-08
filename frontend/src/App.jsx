@@ -47,6 +47,14 @@ function App() {
             <i className="ri-heart-fill"></i>
 
             <span>Favorites</span>
+            </div>
+            
+            <div className="menu-item">
+
+            <i className="ri-heart-fill"></i>
+
+            <span>admin</span>
+
 
           </div>
 
