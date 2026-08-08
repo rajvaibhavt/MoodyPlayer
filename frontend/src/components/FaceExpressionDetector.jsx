@@ -1,5 +1,4 @@
 
-
 import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import axios from "axios";
@@ -10,40 +9,53 @@ const FaceExpressionDetector = ({ setSongs, setCurrentMood }) => {
   const [loading, setLoading] = useState(false);
   const [detectedMood, setDetectedMood] = useState("Ready");
 
-  // Start Camera
   const startVideo = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
       });
 
-      videoRef.current.srcObject = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
     } catch (err) {
       console.log("Camera Error:", err);
     }
   };
 
-  // Load FaceAPI Models
   const loadModels = async () => {
-    await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
-    await faceapi.nets.faceExpressionNet.loadFromUri("/models");
+    try {
+      await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
+      await faceapi.nets.faceExpressionNet.loadFromUri("/models");
 
-    console.log("✅ FaceAPI Models Loaded");
+      console.log("FaceAPI Models Loaded");
 
-    startVideo();
+      startVideo();
+    } catch (err) {
+      console.log("Model Loading Error:", err);
+    }
   };
 
   useEffect(() => {
     loadModels();
+
+    return () => {
+      if (videoRef.current?.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
   }, []);
 
-  // Fetch Songs
   const fetchSongs = async (mood) => {
     try {
       console.log("Fetching songs for:", mood);
 
       const response = await axios.get(
-        `/api/songs?mood=${encodeURIComponent(mood)}`
+        `https://moodyplayer-g138.onrender.com/songs?mood=${encodeURIComponent(
+          mood
+        )}`
       );
 
       console.log("Backend Response:", response.data);
@@ -59,7 +71,6 @@ const FaceExpressionDetector = ({ setSongs, setCurrentMood }) => {
     }
   };
 
-  // Detect Mood
   const detectMood = async () => {
     if (!videoRef.current) return;
 
@@ -83,12 +94,10 @@ const FaceExpressionDetector = ({ setSongs, setCurrentMood }) => {
 
       console.log("Expressions:", expressions);
 
-      // Highest Confidence Expression
-      let mood = Object.keys(expressions).reduce((a, b) =>
+      const mood = Object.keys(expressions).reduce((a, b) =>
         expressions[a] > expressions[b] ? a : b
       );
 
-      // Map moods to your database
       const moodMap = {
         happy: "happy",
         sad: "sad",
@@ -96,15 +105,15 @@ const FaceExpressionDetector = ({ setSongs, setCurrentMood }) => {
         neutral: "neutral",
         surprised: "surprised",
         fearful: "fearful",
-        disgusted: "disgusted ",
+        disgusted: "disgusted",
       };
 
-      const finalMood = moodMap[mood] || "happy";
+      const finalMood = moodMap[mood] || "neutral";
 
       console.log("Detected:", mood);
       console.log("Database Mood:", finalMood);
 
-      setDetectedMood(mood);
+      setDetectedMood(finalMood);
 
       if (setCurrentMood) {
         setCurrentMood(finalMood);
@@ -114,7 +123,7 @@ const FaceExpressionDetector = ({ setSongs, setCurrentMood }) => {
 
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.log("Mood Detection Error:", err);
       setLoading(false);
     }
   };
@@ -143,10 +152,9 @@ const FaceExpressionDetector = ({ setSongs, setCurrentMood }) => {
   };
 
   return (
-    <div className="face-detection-container">
-      <div className="live-status">
-        <div className="live-dot"></div>
-        LIVE AI
+    <div className="face-expression-detector">
+      <div className="live-ai">
+        <span>●</span> LIVE AI
       </div>
 
       <video
@@ -166,8 +174,9 @@ const FaceExpressionDetector = ({ setSongs, setCurrentMood }) => {
       <button
         className="detect-btn"
         onClick={detectMood}
+        disabled={loading}
       >
-        Detect Mood
+        {loading ? "Detecting..." : "Detect Mood"}
       </button>
     </div>
   );
